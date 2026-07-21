@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t devops-platform:${{ github.sha }} .
+
+      - name: Run container
+        run: docker run -d --rm --name devops-platform -p 8080:8080 devops-platform:${{ github.sha }}
+
+      - name: Check health endpoint
+        run: curl --fail --retry 5 --retry-connrefused http://localhost:8080/health
