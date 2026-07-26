@@ -42,31 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show OIDC claims
-        shell: bash
-        run: |
-          python - <<'PY'
-          import base64
-          import json
-          import os
-          import urllib.request
-
-          url = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com"
-          request = urllib.request.Request(
-              url,
-              headers={"Authorization": f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"},
-          )
-          token = json.load(urllib.request.urlopen(request))["value"]
-          payload = token.split(".")[1]
-          payload += "=" * (-len(payload) % 4)
-          claims = json.loads(base64.urlsafe_b64decode(payload))
-
-          print(json.dumps(
-              {key: claims.get(key) for key in ("sub", "aud", "repository", "ref")},
-              indent=2,
-          ))
-          PY
-
+      
       - name: Configure AWS credentials with OIDC
         uses: aws-actions/configure-aws-credentials@v5
         with:

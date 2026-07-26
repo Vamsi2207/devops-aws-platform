@@ -25,7 +25,9 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:Vamsi2207/devops-aws-platform:ref:refs/heads/main"]
+      values = [
+        "repo:Vamsi2207@110253076/devops-aws-platform@1307912626:ref:refs/heads/main",
+      ]
     }
   }
 }
